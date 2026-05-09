@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Applications Quiz — CAP31201</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0f13;
+  --surface: #16181f;
+  --surface2: #1e2029;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #f0f0f0;
+  --muted: #8a8fa8;
+  --accent: #2ecc7e;
+  --accent2: #1abc9c;
+  --green: #2ecc7e;
+  --red: #ff5c6a;
+  --amber: #ffbb3d;
+  --pill-bg: rgba(46,204,126,0.12);
+  --pill-border: rgba(46,204,126,0.3);
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(rgba(46,204,126,0.03) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(46,204,126,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 0 20px 80px; }
+
+.screen { display: none; animation: fadeUp 0.4s ease; }
+.screen.active { display: block; }
+@keyframes fadeUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
+
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 0; margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: 0.05em; color: var(--accent); }
+.nav-logo span { color: var(--muted); font-weight: 400; }
+.nav-links { display: flex; gap: 6px; }
+.nav-btn { background: transparent; border: 1px solid var(--border2); color: var(--muted); padding: 6px 14px; border-radius: 40px; font-size: 12px; font-family: var(--font-body); cursor: pointer; transition: all 0.2s; }
+.nav-btn:hover, .nav-btn.active { border-color: var(--accent); color: var(--accent); background: var(--pill-bg); }
+
+.hero { padding: 60px 0 40px; }
+.hero-tag { display: inline-flex; align-items: center; gap: 8px; background: var(--pill-bg); border: 1px solid var(--pill-border); color: var(--accent); font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 14px; border-radius: 40px; margin-bottom: 28px; }
+.hero-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+h1 { font-family: var(--font-display); font-size: clamp(36px, 6vw, 58px); font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 18px; }
+h1 em { font-style: normal; color: var(--accent); }
+.hero-sub { font-size: 15px; color: var(--muted); max-width: 480px; margin-bottom: 36px; line-height: 1.7; }
+.hero-stats { display: flex; gap: 28px; margin-bottom: 40px; }
+.stat-n { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--text); }
+.stat-l { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+
+.register-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 40px;
+}
+.register-card h2 { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.register-card p { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.form-row.full { grid-template-columns: 1fr; }
+label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+input, select {
+  width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px;
+  color: var(--text); font-family: var(--font-body); font-size: 14px; padding: 10px 14px;
+  outline: none; transition: border-color 0.2s;
+}
+input:focus, select:focus { border-color: var(--accent); }
+.topic-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.topic-toggle {
+  background: var(--surface2); border: 1px solid var(--border2); color: var(--muted);
+  padding: 6px 14px; border-radius: 40px; font-size: 12px; cursor: pointer;
+  font-family: var(--font-body); transition: all 0.2s;
+}
+.topic-toggle.on { background: var(--pill-bg); border-color: var(--pill-border); color: var(--accent); }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  padding: 11px 22px; border-radius: 40px; cursor: pointer;
+  border: none; transition: all 0.2s; text-decoration: none;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #40df8e; transform: translateY(-1px); }
+.btn-ghost { background: transparent; border: 1px solid var(--border2); color: var(--muted); }
+.btn-ghost:hover { border-color: var(--border2); color: var(--text); background: var(--surface2); }
+
+.progress-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.progress-label { font-size: 12px; color: var(--muted); }
+.progress-score { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--accent); }
+.progress-track { height: 3px; background: var(--surface2); border-radius: 3px; margin-bottom: 28px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 3px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+
+.q-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; padding: 28px 28px 20px; margin-bottom: 16px; }
+.q-section-tag { display: inline-block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); background: var(--pill-bg); border: 1px solid var(--pill-border); padding: 3px 10px; border-radius: 40px; margin-bottom: 14px; }
+.q-text { font-family: var(--font-display); font-size: 18px; font-weight: 600; line-height: 1.4; color: var(--text); margin-bottom: 22px; }
+.options { display: grid; gap: 9px; }
+.opt-btn {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 13px 16px;
+  text-align: left; cursor: pointer; width: 100%;
+  font-family: var(--font-body); font-size: 14px; color: var(--text);
+  transition: all 0.2s; line-height: 1.5;
+}
+.opt-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(46,204,126,0.06); }
+.opt-letter {
+  min-width: 24px; height: 24px; border-radius: 6px;
+  background: var(--border); display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: var(--muted);
+  font-family: var(--font-display); flex-shrink: 0; margin-top: 1px;
+}
+.opt-btn.correct { border-color: var(--green); background: rgba(46,204,126,0.08); }
+.opt-btn.correct .opt-letter { background: var(--green); color: #fff; }
+.opt-btn.wrong { border-color: var(--red); background: rgba(255,92,106,0.08); }
+.opt-btn.wrong .opt-letter { background: var(--red); color: #fff; }
+
+.feedback-box {
+  border-radius: 10px; padding: 14px 16px; font-size: 13px; line-height: 1.65;
+  margin-bottom: 14px; display: none;
+}
+.feedback-box.correct { background: rgba(46,204,126,0.1); border: 1px solid rgba(46,204,126,0.3); color: #7ef0b0; }
+.feedback-box.wrong { background: rgba(255,92,106,0.1); border: 1px solid rgba(255,92,106,0.3); color: #ffa0a8; }
+
+.result-hero { text-align: center; padding: 60px 0 40px; }
+.result-ring {
+  width: 140px; height: 140px; border-radius: 50%;
+  background: conic-gradient(var(--accent) var(--pct, 0%), var(--surface2) 0%);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+}
+.result-ring-inner {
+  width: 108px; height: 108px; border-radius: 50%;
+  background: var(--bg); display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+}
+.result-pct { font-family: var(--font-display); font-size: 32px; font-weight: 800; }
+.result-title { font-family: var(--font-display); font-size: 28px; font-weight: 700; margin-bottom: 10px; }
+.result-sub { color: var(--muted); max-width: 400px; margin: 0 auto 32px; font-size: 14px; }
+
+.lb-card { background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; overflow: hidden; margin-bottom: 24px; }
+.lb-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.lb-row { display: flex; align-items: center; gap: 16px; padding: 14px 24px; border-bottom: 1px solid var(--border); }
+.lb-rank { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--muted); width: 24px; text-align: center; }
+.lb-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 13px; font-weight: 700; }
+.lb-info { flex: 1; }
+.lb-score-wrap { text-align: right; }
+.lb-score { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--accent); }
+
+@media(max-width: 560px) {
+  .form-row { grid-template-columns: 1fr; }
+  h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <div class="nav-logo">CAP31201<span>/systems</span></div>
+    <div class="nav-links">
+      <button class="nav-btn active" onclick="showScreen('home')">Quiz</button>
+      <button class="nav-btn" onclick="showScreen('leaderboard')">Leaderboard</button>
+    </div>
+  </nav>
+
+  <div id="screen-home" class="screen active">
+    <div class="hero">
+      <div class="hero-tag">Computer Applications · Topic 1 & 2</div>
+      <h1>Master <em>System</em><br>Concepts</h1>
+      <p class="hero-sub">50 questions on Information Systems, performance standards, management levels, and office automation (OAS).</p>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-n">50</div><div class="stat-l">Questions</div></div>
+        <div class="stat"><div class="stat-n">6</div><div class="stat-l">Domains</div></div>
+        <div class="stat"><div class="stat-n" id="stat-players">0</div><div class="stat-l">Attempts</div></div>
+      </div>
+    </div>
+
+    <div class="register-card">
+      <h2>Register to start</h2>
+      <p>Enter your details to track your progress on the leaderboard.</p>
+      <div class="form-row">
+        <div>
+          <label for="inp-name">Full name</label>
+          <input type="text" id="inp-name" placeholder="e.g. Princess Chirwa">
+        </div>
+        <div>
+          <label for="inp-reg">Reg. number</label>
+          <input type="text" id="inp-reg" placeholder="e.g. 2501...">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div>
+          <label>Filter domains</label>
+          <div class="topic-grid" id="topic-grid"></div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="startQuiz()" style="width:100%;justify-content:center">
+        Start quiz →
+      </button>
+    </div>
+  </div>
+
+  <div id="screen-quiz" class="screen">
+    <div style="padding-top: 24px;">
+      <div class="progress-header">
+        <span class="progress-label" id="prog-label">Question 1 of 50</span>
+        <span class="progress-score" id="prog-score">0 pts</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+
+      <div class="q-card">
+        <div class="q-section-tag" id="q-section"></div>
+        <div class="q-text" id="q-text"></div>
+        <div class="options" id="options"></div>
+      </div>
+
+      <div class="feedback-box" id="feedback"></div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center">
+        <button class="btn btn-ghost" onclick="showScreen('home')">Exit</button>
+        <button class="btn btn-primary" id="next-btn" onclick="nextQ()" style="display:none">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-result" class="screen">
+    <div class="result-hero">
+      <div class="result-ring" id="result-ring">
+        <div class="result-ring-inner">
+          <div class="result-pct" id="result-pct">0%</div>
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase">score</div>
+        </div>
+      </div>
+      <div class="result-title" id="result-title">Finish!</div>
+      <div class="result-sub" id="result-sub"></div>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button class="btn btn-ghost" onclick="restartQuiz()">Retry</button>
+        <button class="btn btn-primary" onclick="showScreen('leaderboard')">Leaderboard →</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-leaderboard" class="screen">
+    <div style="padding-top: 32px;">
+      <h2 style="font-family: var(--font-display); font-size: 26px; font-weight: 800; margin-bottom: 28px;">Leaderboard</h2>
+      <div class="lb-card">
+        <div class="lb-header">
+          <h3 style="font-size:15px">Top performers</h3>
+          <span class="text-muted" style="font-size:12px" id="lb-count">0 attempts</span>
+        </div>
+        <div id="lb-rows"></div>
+      </div>
+      <div style="text-align:center">
+        <button class="btn btn-ghost" onclick="showScreen('home')">Back to home</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  // Topic 1: Systems Concepts
+  {s:"Data & Information", q:"What is the best description of 'Data' in the context of information systems?", opts:["Meaningful insights used for decision making", "Raw facts, transactions, and symbols that are not yet processed", "Summarized reports for senior management", "The final output of an information system"], ans:1, exp:"Data consists of raw facts and symbols. On its own, it is not very useful until it is processed into information."},
+  {s:"Data & Information", q:"When raw facts are processed to provide value and meaning to a user, they become:", opts:["Unstructured Data", "Raw Material", "Information", "Feedback"], ans:2, exp:"Information is data that has been transformed into a meaningful and useful form for the recipient."},
+  {s:"Systems Transformation", q:"In the information transformation process, which stage involves holding data for future use?", opts:["Input", "Processing", "Output", "Storage"], ans:3, exp:"Storage is the stage where processed information or raw data is kept for later retrieval."},
+  {s:"Systems Transformation", q:"Which stage of the transformation process involves turning 'raw materials' into 'meaningful insights'?", opts:["Input", "Processing", "Output", "Storage"], ans:1, exp:"Processing is the action of transforming raw data into useful information products."},
+  {s:"System Components", q:"Which component of an information system refers to the physical devices such as computers and keyboards?", opts:["Software", "Hardware", "Procedures", "Communications"], ans:1, exp:"Hardware comprises the physical equipment used to input, process, and output data."},
+  {s:"System Components", q:"The rules or guidelines that people follow when using an information system are known as:", opts:["Software", "Hardware", "Procedures", "Communications"], ans:2, exp:"Procedures are the instructions and rules for using the system, often found in manual or electronic guides."},
+  {s:"System Components", q:"Which component is considered the 'bridge' that allows different systems to share text, graphics, and video?", opts:["Hardware", "Data", "Communications", "Storage"], ans:2, exp:"Communications technology connects different hardware devices and enables data exchange."},
+  {s:"System Performance", q:"A measure of how well a system achieves its intended goals (doing the right things) is called:", opts:["Efficiency", "Effectiveness", "Throughput", "Input ratio"], ans:1, exp:"Effectiveness focuses on the results and whether targets/goals are met."},
+  {s:"System Performance", q:"If a system produces a specific output using the minimum amount of resources (doing things right), it has high:", opts:["Efficiency", "Effectiveness", "Reliability", "Scalability"], ans:0, exp:"Efficiency is measured by the ratio of output to input; it’s about resource optimization."},
+  {s:"System Performance", q:"Which of the following is considered an 'uncontrollable factor' that might negatively affect system results?", opts:["Performance standards", "Route planning", "A sudden power outage or internet failure", "The choice of database software"], ans:2, exp:"Uncontrollable factors are external conditions (like fuel shortages or power outages) that managers cannot change but must account for."},
+  {s:"System Performance", q:"What is the primary purpose of 'Performance Standards' in a system?", opts:["To explain away poor results", "To define specific targets to be achieved", "To eliminate uncontrollable factors", "To replace manual procedures"], ans:1, exp:"Performance standards provide the target (e.g., '60% of deliveries on time') against which effectiveness is measured."},
+  
+  // Topic 2: Information Systems
+  {s:"Management Levels", q:"Senior-level managers focus on which type of decision-making?", opts:["Structured and day-to-day", "Semi-structured and short-term", "Unstructured and long-term strategic goals", "Routine transaction processing"], ans:2, exp:"Senior (Strategic) management deals with complex, unstructured decisions and long-range planning."},
+  {s:"Management Levels", q:"Which level of management requires highly detailed, internal information for daily activities?", opts:["Strategic management", "Tactical management", "Operational management", "Executive management"], ans:2, exp:"Operational managers need detailed, real-time data to coordinate and control daily tasks."},
+  {s:"Management Levels", q:"Tactical managers, who coordinate and control middle-level activities, typically make what kind of decisions?", opts:["Structured", "Unstructured", "Semi-structured", "Fixed"], ans:2, exp:"Tactical decisions are semi-structured, falling between routine operations and high-level strategy."},
+  {s:"System Types", q:"A system that captures and processes the daily business transactions (e.g., sales) of an organization is a:", opts:["Decision Support System (DSS)", "Executive Support System (ESS)", "Transaction Processing System (TPS)", "Expert System"], ans:2, exp:"TPS is the foundational system that handles routine business events and transactions."},
+  {s:"System Types", q:"Which system type takes data from a TPS and creates summarized reports for middle managers?", opts:["Transaction Processing System", "Management Information System (MIS)", "Office Automation System", "Informal System"], ans:1, exp:"MIS provides information products (like summaries) to support tactical control and coordination."},
+  {s:"System Types", q:"An information system based on 'word of mouth' rather than written procedures is classified as:", opts:["Formal", "Informal", "Manual", "Computer-based"], ans:1, exp:"Informal systems are based on verbal or unwritten communication within an organization."},
+  {s:"Office Automation", q:"What does OAS stand for in the context of Information Systems?", opts:["Operating Access System", "Office Automation System", "Open Analytics Software", "Operational Account System"], ans:1, exp:"OAS (also known as Office Information Systems) automates standard office tasks."},
+  {s:"Office Automation", q:"Which task is a classic example of an activity supported by an OAS?", opts:["Formulating a 10-year corporate vision", "Performing daily inventory counts", "Scheduling meetings and sending e-mails", "Designing the physical hardware of a server"], ans:2, exp:"OAS focuses on office activities like messaging, document distribution, and scheduling."},
+  {s:"Office Automation", q:"Who in an organization benefits from the features of an OAS/Office Information System?", opts:["Only executive management", "Only non-management employees", "Only the IT department", "All levels of users from management to non-management"], ans:3, exp:"OAS supports tasks across all management and operational levels."},
+  {s:"System Concepts", q:"The role of Information Systems is to provide info to management to help them carry out:", opts:["Personal hobbies", "Manual procedures only", "Corporate objectives and goals", "Physical hardware assembly"], ans:2, exp:"Information systems are designed to support forecasting, planning, and goal achievement in an organization."},
+  {s:"System Performance", q:"If routes are well-planned (minimal fuel waste) but deliveries are late due to fuel shortages, the system has:", opts:["Low efficiency and low effectiveness", "High efficiency but low effectiveness", "Low efficiency but high effectiveness", "High efficiency and high effectiveness"], ans:1, exp:"Efficiency is high (well-planned resources), but effectiveness is low (failed to meet delivery target)."},
+  {s:"Data & Information", q:"Which of the following is NOT a type of information system mentioned in the slides?", opts:["Formal", "Informal", "Cognitive", "Manual"], ans:2, exp:"The slides identify Manual, Informal, Formal, and Computer-based as the main types."},
+  {s:"Management Levels", q:"Information for Senior management is typically characterized by being:", opts:["Detailed and internal", "Summarized and external", "Routine and structured", "Paper-based and informal"], ans:1, exp:"Senior managers need high-level summaries and external data for strategic planning."},
+  {s:"System Components", q:"Programs that provide the instructions to the hardware to process data are called:", opts:["Hardware", "Software", "Communications", "Procedures"], ans:1, exp:"Software is the 'brain' of the system, consisting of the coded instructions used to process data."},
+  {s:"System Transformation", q:"A registration department mailing schedules manually vs emailing them is an example of moving to a(n):", opts:["Informal system", "Manual system", "Office Information System (OAS)", "Structured System"], ans:2, exp:"Emailing schedules electronically is a core function of modern office information/automation systems."},
+  {s:"Data & Information", q:"Raw material is to a finished product as 'Data' is to:", opts:["Symbols", "Numbers", "Information", "Transactions"], ans:2, exp:"Data is the raw input that is processed into the finished product, which is Information."},
+  {s:"System Performance", q:"A value or quantity that cannot be controlled by the decision maker (e.g., raw material cost) is a(n):", opts:["Performance standard", "Uncontrollable factor", "Efficiency metric", "Operational target"], ans:1, exp:"Uncontrollable factors are external to the decision maker's influence."},
+  {s:"Information System Types", q:"A system that uses written procedures is called a:", opts:["Manual system", "Informal system", "Formal system", "Unstructured system"], ans:2, exp:"Formal systems are defined by documented, written rules and procedures."},
+  {s:"Management Levels", q:"Junior-level managers are primarily found at which management level?", opts:["Strategic", "Tactical", "Operational", "Executive"], ans:2, exp:"Operational management is the lower level responsible for day-to-day execution."},
+  {s:"Office Automation", q:"Which software would likely be part of an OAS/Office Automation System?", opts:["Web page authoring software", "Assembly language compilers", "Basic Input Output System (BIOS)", "Network router firmware"], ans:0, exp:"OAS software includes web authoring, word processing, and spreadsheets."},
+  {s:"System Concepts", q:"The information products produced by an IS can be used to support:", opts:["Manual filing only", "Forecasting and coordinating", "Only physical storage", "Only unstructured data"], ans:1, exp:"IS products support planning, forecasting, coordination, and operational activities."},
+  {s:"System Performance", q:"Efficiency is often summarized as:", opts:["Doing the right things", "Doing things right", "Avoiding all goals", "Setting high targets"], ans:1, exp:"Efficiency is about the process—doing things in the correct, resource-optimized way."},
+  {s:"System Performance", q:"Effectiveness is often summarized as:", opts:["Doing things right", "Doing the right things", "Using the most fuel", "Avoiding uncontrollable factors"], ans:1, exp:"Effectiveness is about the goal—doing the specific thing that results in the target being met."},
+  {s:"Management Levels", q:"Long-range plans (e.g., 5-year goals) are the responsibility of:", opts:["Strategic Management", "Tactical Management", "Operational Management", "Data Entry Clerks"], ans:0, exp:"Strategic management handles long-term corporate direction."},
+  {s:"System Components", q:"Which component is considered the 'physical equipment'?", opts:["Software", "Hardware", "Procedures", "Communications"], ans:1, exp:"Hardware includes the actual machines and devices."},
+  {s:"Data & Information", q:"Which statement about Data is FALSE?", opts:["It relates to transactions", "It is usually not very useful on its own", "It is the result of data processing", "It can come in numbers or symbols"], ans:2, exp:"Information is the result of processing; Data is the starting material."},
+  {s:"System Concepts", q:"Input, Processing, Output, and Storage are the stages of:", opts:["Management levels", "Uncontrollable factors", "Transformation process", "Informal systems"], ans:2, exp:"This is the standard model for how systems transform inputs into outputs."},
+  {s:"Management Levels", q:"Middle management's primary information need is:", opts:["Highly detailed daily logs", "Summarized reports to monitor performance", "Raw data with no context", "Only external rumors"], ans:1, exp:"Middle (Tactical) managers need summaries to track how their departments are performing."},
+  {s:"Office Automation", q:"Which of the following is NOT communication technology used in OAS?", opts:["Videoconferencing", "Voice mail", "Manual paper shredding", "Electronic exchange of text"], ans:2, exp:"Manual shredding is a physical security task, not an OIS communication technology."},
+  {s:"System Performance", q:"Uncontrollable factors help explain:", opts:["Why performance standards are too low", "Why results may vary even when managers did their best", "Why data is raw facts", "Why software is instructions"], ans:1, exp:"They provide context for performance that is affected by external variables like fuel or power outages."},
+  {s:"Management Levels", q:"Deciding whether to open a new campus is likely a(n):", opts:["Structured decision", "Semi-structured decision", "Unstructured decision", "Routine decision"], ans:2, exp:"Strategic decisions about expansion are typically unstructured and complex."},
+  {s:"Management Levels", q:"Handling a student's routine course registration is a(n):", opts:["Structured decision", "Unstructured decision", "Strategic decision", "Tactical decision"], ans:0, exp:"Operational, day-to-day tasks are usually structured and follow fixed rules."},
+  {s:"System Performance", q:"Metric: (Actual Results / Target Results). This measures:", opts:["Efficiency", "Effectiveness", "Transformation", "Storage capacity"], ans:1, exp:"Measuring results against a target is a check for effectiveness."},
+  {s:"System Performance", q:"Metric: (Output / Input). This measures:", opts:["Efficiency", "Effectiveness", "Goals", "Procedures"], ans:0, exp:"Ratios of output to input measure how efficiently resources were used."},
+  {s:"System Components", q:"The 'People' component of an IS includes:", opts:["Only the computers", "The users and operators of the system", "The physical wires", "The raw data only"], ans:1, exp:"The people component includes everyone from the data entry staff to the managers who use the reports."},
+  {s:"System Transformation", q:"What must happen to data before it can provide 'meaningful insights'?", opts:["It must be stored forever", "It must be deleted", "It must be processed", "It must be turned into hardware"], ans:2, exp:"Processing is the bridge between raw data and insights (Information)."},
+  {s:"System Types", q:"Computer-based information systems (CBIS) utilize:", opts:["Only pencil and paper", "Word of mouth only", "Hardware, software, and databases", "No structured procedures"], ans:2, exp:"CBIS systems are characterized by their use of computer technology."},
+  {s:"Management Levels", q:"Junior management focuses on 'Internal' information. Strategic management focuses on:", opts:["Only Internal", "External and Internal", "Only Hardware", "Informal information only"], ans:1, exp:"Top management needs to see the internal state of the company AND the external market/conditions."},
+  {s:"System Concepts", q:"System performance standards define:", opts:["External conditions that influence a system", "The targets to be achieved", "The raw facts of a transaction", "The communication wires"], ans:1, exp:"Standards set the 'bar' for what the system is expected to accomplish."}
+];
+
+const TOPICS = [...new Set(QUESTIONS.map(q => q.s))];
+const AVATARS = ['#2ecc7e','#1abc9c','#3498db','#9b59b6','#e67e22'];
+
+let activeTopics = new Set(TOPICS);
+let quiz = [];
+let cur = 0, score = 0, answered = false;
+let currentUser = {name:'', reg:''};
+let leaderboard = JSON.parse(localStorage.getItem('cap_quiz_lb') || '[]');
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if(id==='leaderboard') { renderLB(); document.querySelectorAll('.nav-btn')[1].classList.add('active'); }
+  else document.querySelectorAll('.nav-btn')[0].classList.add('active');
+}
+
+function buildTopicGrid(){
+  const g = document.getElementById('topic-grid');
+  TOPICS.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'topic-toggle on';
+    b.textContent = t;
+    b.onclick = () => {
+      if(activeTopics.has(t)){ if(activeTopics.size>1){ activeTopics.delete(t); b.className='topic-toggle'; } }
+      else { activeTopics.add(t); b.className='topic-toggle on'; }
+    };
+    g.appendChild(b);
+  });
+}
+
+function startQuiz(){
+  const name = document.getElementById('inp-name').value.trim();
+  if(!name){ alert('Please enter your name.'); return; }
+  currentUser = { name, reg: document.getElementById('inp-reg').value.trim() };
+  quiz = QUESTIONS.filter(q => activeTopics.has(q.s)).sort(()=>Math.random()-0.5).slice(0,50);
+  cur = 0; score = 0;
+  showScreen('quiz');
+  renderQ();
+}
+
+function renderQ(){
+  const q = quiz[cur];
+  document.getElementById('prog-fill').style.width = (cur/quiz.length*100)+'%';
+  document.getElementById('prog-label').textContent = `Question ${cur+1} of ${quiz.length}`;
+  document.getElementById('prog-score').textContent = `${score} pts`;
+  document.getElementById('q-section').textContent = q.s;
+  document.getElementById('q-text').textContent = q.q;
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const b = document.createElement('button');
+    b.className = 'opt-btn';
+    b.innerHTML = `<span class="opt-letter">${String.fromCharCode(65+i)}</span><span>${o}</span>`;
+    b.onclick = () => { if(!answered) select(i, b); };
+    opts.appendChild(b);
+  });
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('next-btn').style.display = 'none';
+  answered = false;
+}
+
+function select(idx, btn){
+  answered = true;
+  const q = quiz[cur];
+  const fb = document.getElementById('feedback');
+  document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+  if(idx === q.ans){
+    btn.classList.add('correct'); score++;
+    fb.className = 'feedback-box correct';
+    fb.innerHTML = `<strong>Correct!</strong> ${q.exp}`;
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.opt-btn')[q.ans].classList.add('correct');
+    fb.className = 'feedback-box wrong';
+    fb.innerHTML = `<strong>Not quite.</strong> ${q.exp}`;
+  }
+  fb.style.display = 'block';
+  document.getElementById('next-btn').style.display = 'inline-flex';
+}
+
+function nextQ(){ cur++; if(cur < quiz.length) renderQ(); else endQuiz(); }
+
+function endQuiz(){
+  const pct = Math.round(score/quiz.length*100);
+  document.getElementById('result-ring').style.setProperty('--pct', pct+'%');
+  document.getElementById('result-pct').textContent = pct+'%';
+  document.getElementById('result-sub').textContent = pct >= 70 ? "Excellent work! You have a solid grasp of Information Systems concepts." : "Good attempt. Review the distinctions between Efficiency and Effectiveness.";
+  leaderboard.push({ ...currentUser, score, total: quiz.length, pct, time: new Date().toLocaleDateString(), color: AVATARS[Math.floor(Math.random()*AVATARS.length)] });
+  leaderboard.sort((a,b) => b.pct - a.pct);
+  localStorage.setItem('cap_quiz_lb', JSON.stringify(leaderboard));
+  showScreen('result');
+}
+
+function restartQuiz(){ showScreen('home'); }
+
+function renderLB(){
+  const rows = document.getElementById('lb-rows');
+  document.getElementById('lb-count').textContent = `${leaderboard.length} attempts`;
+  rows.innerHTML = leaderboard.slice(0,10).map((e,i) => `
+    <div class="lb-row">
+      <div class="lb-rank">${i+1}</div>
+      <div class="lb-avatar" style="background:${e.color}22;color:${e.color}">${e.name[0]}</div>
+      <div class="lb-info">
+        <div style="font-weight:600;font-size:14px">${e.name}</div>
+        <div style="font-size:11px;color:var(--muted)">${e.reg} · ${e.time}</div>
+      </div>
+      <div class="lb-score-wrap">
+        <div class="lb-score">${e.score}/${e.total}</div>
+        <div style="font-size:10px;color:var(--muted)">${e.pct}%</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+buildTopicGrid();
+document.getElementById('stat-players').textContent = leaderboard.length;
+</script>
+</body>
+</html>
