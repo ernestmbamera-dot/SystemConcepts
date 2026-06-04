@@ -377,22 +377,32 @@ function startQuiz(){
   if(!name){ alert('Please enter your name.'); return; }
   currentUser = { name, reg: document.getElementById('inp-reg').value.trim() };
   
-  // NEW: SHUFFLE OPTIONS LOGIC START
-  QUESTIONS.forEach(q => {
-    // Map options to include their original correctness
-    const indexedOpts = q.opts.map((text, index) => ({ text, isCorrect: index === q.ans }));
-    // Shuffle the options array using Fisher-Yates
-    for (let i = indexedOpts.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [indexedOpts[i], indexedOpts[j]] = [indexedOpts[j], indexedOpts[i]];
-    }
-    // Update the question object with shuffled text and the new correct index
-    q.opts = indexedOpts.map(o => o.text);
-    q.ans = indexedOpts.findIndex(o => o.isCorrect);
-  });
-  // SHUFFLE OPTIONS LOGIC END
+  // 1. Filter by active topics
+  // 2. Shuffle the order of the questions
+  // 3. Slice to a max of 50
+  // 4. Map through each question to shuffle its specific options
+  quiz = QUESTIONS.filter(q => activeTopics.has(q.s))
+    .sort(()=>Math.random()-0.5)
+    .slice(0,50)
+    .map(q => {
+      // Create an array of objects to track which option is the correct one
+      let mappedOpts = q.opts.map((text, index) => ({
+        text: text,
+        isCorrect: index === q.ans
+      }));
+      
+      // Shuffle the options
+      mappedOpts.sort(() => Math.random() - 0.5);
+      
+      // Return a cloned question object with the newly shuffled options 
+      // and the updated correct answer index
+      return {
+        ...q,
+        opts: mappedOpts.map(o => o.text),
+        ans: mappedOpts.findIndex(o => o.isCorrect)
+      };
+    });
 
-  quiz = QUESTIONS.filter(q => activeTopics.has(q.s)).sort(()=>Math.random()-0.5).slice(0,50);
   cur = 0; score = 0;
   showScreen('quiz');
   renderQ();
@@ -474,7 +484,6 @@ function renderLB(){
 
 buildTopicGrid();
 document.getElementById('stat-players').textContent = leaderboard.length;
-buildTopicGrid();
 </script>
 </body>
 </html>
