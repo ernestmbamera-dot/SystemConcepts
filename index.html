@@ -376,6 +376,22 @@ function startQuiz(){
   const name = document.getElementById('inp-name').value.trim();
   if(!name){ alert('Please enter your name.'); return; }
   currentUser = { name, reg: document.getElementById('inp-reg').value.trim() };
+  
+  // NEW: SHUFFLE OPTIONS LOGIC START
+  QUESTIONS.forEach(q => {
+    // Map options to include their original correctness
+    const indexedOpts = q.opts.map((text, index) => ({ text, isCorrect: index === q.ans }));
+    // Shuffle the options array using Fisher-Yates
+    for (let i = indexedOpts.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indexedOpts[i], indexedOpts[j]] = [indexedOpts[j], indexedOpts[i]];
+    }
+    // Update the question object with shuffled text and the new correct index
+    q.opts = indexedOpts.map(o => o.text);
+    q.ans = indexedOpts.findIndex(o => o.isCorrect);
+  });
+  // SHUFFLE OPTIONS LOGIC END
+
   quiz = QUESTIONS.filter(q => activeTopics.has(q.s)).sort(()=>Math.random()-0.5).slice(0,50);
   cur = 0; score = 0;
   showScreen('quiz');
@@ -458,6 +474,7 @@ function renderLB(){
 
 buildTopicGrid();
 document.getElementById('stat-players').textContent = leaderboard.length;
+buildTopicGrid();
 </script>
 </body>
 </html>
